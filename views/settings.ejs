@@ -1,0 +1,87 @@
+<%- include('partials/header', { title: 'সেটিংস' }) %>
+
+<div class="page-header">
+  <div>
+    <h2>সেটিংস</h2>
+    <p>সাইটের তথ্য ও পাসওয়ার্ড পরিবর্তন করুন।</p>
+  </div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+  <form method="POST" action="/admin/settings">
+    <div class="card">
+      <div class="card-title"><i class="fas fa-globe"></i> সাইটের তথ্য</div>
+      
+      <div class="form-group">
+        <label class="form-label">সাইটের নাম</label>
+        <input type="text" name="siteName" class="form-input" 
+          value="<%= settings.siteName || 'Admin Panel' %>" required>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">অ্যাডমিন ইউজারনেম</label>
+        <input type="text" name="adminUser" class="form-input" 
+          value="<%= settings.adminUser || 'admin' %>" required>
+      </div>
+      
+      <hr style="border-color:var(--border);margin:24px 0">
+      
+      <div class="card-title" style="margin-bottom:16px"><i class="fas fa-key"></i> পাসওয়ার্ড পরিবর্তন করুন</div>
+      <p style="font-size:13px;color:var(--text3);margin-bottom:16px">পরিবর্তন না করতে চাইলে খালি রাখুন।</p>
+      
+      <div class="form-group">
+        <label class="form-label">বর্তমান পাসওয়ার্ড</label>
+        <input type="password" name="currentPass" class="form-input" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">নতুন পাসওয়ার্ড</label>
+        <input type="password" name="newPass" class="form-input" placeholder="••••••••" autocomplete="new-password">
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">নতুন পাসওয়ার্ড নিশ্চিত করুন</label>
+        <input type="password" name="confirmPass" class="form-input" placeholder="••••••••" autocomplete="new-password">
+      </div>
+      
+      <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center">
+        <i class="fas fa-save"></i> সেটিংস সেভ করুন
+      </button>
+    </div>
+  </form>
+  
+  <div>
+    <div class="card">
+      <div class="card-title"><i class="fas fa-info-circle"></i> সিস্টেম তথ্য</div>
+      <div style="font-size:13px;color:var(--text2);line-height:2.5">
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)">
+          <span>ভার্সন</span>
+          <span style="font-family:'JetBrains Mono',monospace;color:var(--accent)">v1.0.0</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)">
+          <span>Node.js</span>
+          <span style="font-family:'JetBrains Mono',monospace">Express.js</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)">
+          <span>স্টোরেজ</span>
+          <span style="font-family:'JetBrains Mono',monospace">Local JSON</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:8px 0">
+          <span>সিকিউরিটি</span>
+          <span style="font-family:'JetBrains Mono',monospace;color:var(--success)">bcrypt ✓</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="card" style="margin-top:16px;border-color:rgba(255,71,87,0.3)">
+      <div class="card-title" style="color:var(--danger)"><i class="fas fa-exclamation-triangle"></i> সতর্কতা</div>
+      <p style="font-size:13px;color:var(--text2);line-height:1.8">
+        • প্রথম লগইনের পর ডিফল্ট পাসওয়ার্ড অবশ্যই পরিবর্তন করুন<br>
+        • .env ফাইলে SESSION_SECRET সেট করুন<br>
+        • Production এ HTTPS ব্যবহার করুন
+      </p>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>
