@@ -1,0 +1,80 @@
+<%- include('../partials/header', { title: post ? 'পোস্ট সম্পাদনা' : 'নতুন পোস্ট' }) %>
+
+<div class="page-header">
+  <div>
+    <h2><%= post ? 'পোস্ট সম্পাদনা করুন' : 'নতুন পোস্ট লিখুন' %></h2>
+    <p>পোস্টের বিস্তারিত তথ্য পূরণ করুন।</p>
+  </div>
+  <a href="/admin/posts" class="btn btn-ghost"><i class="fas fa-arrow-left"></i> ফিরে যান</a>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 300px;gap:20px;align-items:start">
+  <div>
+    <div class="card">
+      <form method="POST" action="<%= post ? '/admin/posts/edit/' + post.id : '/admin/posts/new' %>">
+        <div class="form-group">
+          <label class="form-label"><i class="fas fa-heading"></i> পোস্টের শিরোনাম *</label>
+          <input type="text" name="title" class="form-input" 
+            placeholder="আপনার পোস্টের শিরোনাম লিখুন..."
+            value="<%= post ? post.title : '' %>" required>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label"><i class="fas fa-align-left"></i> পোস্টের বিষয়বস্তু *</label>
+          <textarea name="content" class="form-textarea" 
+            placeholder="এখানে আপনার পোস্টের বিষয়বস্তু লিখুন... HTML সমর্থিত।" 
+            required><%= post ? post.content : '' %></textarea>
+        </div>
+        
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div class="form-group">
+            <label class="form-label"><i class="fas fa-tags"></i> ট্যাগ (কমা দিয়ে আলাদা করুন)</label>
+            <input type="text" name="tags" class="form-input" 
+              placeholder="tech, news, বাংলা"
+              value="<%= post && post.tags ? post.tags.join(', ') : '' %>">
+          </div>
+          <div class="form-group">
+            <label class="form-label"><i class="fas fa-toggle-on"></i> স্ট্যাটাস</label>
+            <select name="status" class="form-select">
+              <option value="draft" <%= (!post || post.status === 'draft') ? 'selected' : '' %>>⏸ ড্রাফট</option>
+              <option value="published" <%= (post && post.status === 'published') ? 'selected' : '' %>>✓ প্রকাশ করুন</option>
+            </select>
+          </div>
+        </div>
+        
+        <div style="display:flex;gap:12px;justify-content:flex-end">
+          <a href="/admin/posts" class="btn btn-ghost">বাতিল</a>
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save"></i> <%= post ? 'আপডেট করুন' : 'পোস্ট করুন' %>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <div>
+    <div class="card">
+      <div class="card-title"><i class="fas fa-info-circle"></i> টিপস</div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.8">
+        <p>• HTML ট্যাগ ব্যবহার করা যাবে</p>
+        <p>• ট্যাগ কমা দিয়ে আলাদা করুন</p>
+        <p>• ড্রাফট সেভ করলে প্রকাশ হবে না</p>
+        <p>• পরে প্রকাশ স্ট্যাটাস পরিবর্তন করা যাবে</p>
+      </div>
+    </div>
+    
+    <% if (post) { %>
+    <div class="card" style="margin-top:16px">
+      <div class="card-title"><i class="fas fa-info"></i> পোস্ট তথ্য</div>
+      <div style="font-size:12px;color:var(--text2);font-family:'JetBrains Mono',monospace;line-height:2">
+        <div>ID: <%= post.id.slice(0,12) %>...</div>
+        <div>তৈরি: <%= new Date(post.createdAt).toLocaleString('bn-BD') %></div>
+        <div>আপডেট: <%= new Date(post.updatedAt).toLocaleString('bn-BD') %></div>
+      </div>
+    </div>
+    <% } %>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>
+
