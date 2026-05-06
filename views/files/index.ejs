@@ -1,0 +1,96 @@
+<%- include('../partials/header', { title: 'ফাইল ম্যানেজার' }) %>
+
+<div class="page-header">
+  <div>
+    <h2>ফাইল ম্যানেজার</h2>
+    <p><%= files.length %>টি ফাইল আপলোড করা আছে।</p>
+  </div>
+</div>
+
+<div class="card" style="margin-bottom:24px">
+  <div class="card-title"><i class="fas fa-cloud-upload-alt"></i> ফাইল আপলোড করুন</div>
+  <form method="POST" action="/admin/files/upload" enctype="multipart/form-data">
+    <div class="upload-zone">
+      <input type="file" name="file">
+      <i class="fas fa-file-upload"></i>
+      <p><span>ক্লিক করুন</span> অথবা ফাইল এখানে ড্র্যাগ করুন</p>
+      <p style="font-size:12px;margin-top:8px;color:var(--text3)">যেকোনো ফাইল — সর্বোচ্চ ৫০ MB (.exe, .sh, .bat ছাড়া)</p>
+    </div>
+    <div style="display:flex;gap:12px;margin-top:16px">
+      <div class="form-group" style="flex:1;margin:0">
+        <input type="text" name="description" class="form-input" placeholder="ফাইলের বিবরণ (ঐচ্ছিক)">
+      </div>
+      <button type="submit" class="btn btn-primary"><i class="fas fa-upload"></i> আপলোড করুন</button>
+    </div>
+  </form>
+</div>
+
+<div class="card">
+  <% if (files.length === 0) { %>
+    <div class="empty-state">
+      <i class="fas fa-folder-open"></i>
+      <p>এখনো কোনো ফাইল নেই। উপরে থেকে ফাইল আপলোড করুন!</p>
+    </div>
+  <% } else { %>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>ফাইল</th>
+            <th>আকার</th>
+            <th>ধরন</th>
+            <th>বিবরণ</th>
+            <th>তারিখ</th>
+            <th>অ্যাকশন</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% files.forEach(file => { %>
+          <tr>
+            <td>
+              <div style="display:flex;align-items:center;gap:12px">
+                <div style="width:36px;height:36px;background:var(--surface2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px">
+                  <%
+                    const ext = file.originalName.split('.').pop().toLowerCase();
+                    const icons = {pdf:'📄',doc:'📝',docx:'📝',xls:'📊',xlsx:'📊',zip:'🗜️',rar:'🗜️',mp4:'🎬',mp3:'🎵',jpg:'🖼️',jpeg:'🖼️',png:'🖼️'};
+                  %>
+                  <%= icons[ext] || '📁' %>
+                </div>
+                <div>
+                  <div style="color:var(--text);font-weight:500;font-size:14px"><%= file.originalName %></div>
+                  <div style="font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace"><%= file.id.slice(0,8) %>...</div>
+                </div>
+              </div>
+            </td>
+            <td style="font-family:'JetBrains Mono',monospace;font-size:12px">
+              <%= file.size > 1048576 ? (file.size/1048576).toFixed(1)+' MB' : (file.size/1024).toFixed(1)+' KB' %>
+            </td>
+            <td><span class="badge badge-warning" style="font-family:'JetBrains Mono',monospace"><%= file.mimetype.split('/')[1] %></span></td>
+            <td style="color:var(--text2);font-size:13px;max-width:180px">
+              <%= file.description || '—' %>
+            </td>
+            <td style="font-family:'JetBrains Mono',monospace;font-size:12px;white-space:nowrap">
+              <%= new Date(file.uploadedAt).toLocaleDateString('bn-BD') %>
+            </td>
+            <td>
+              <div style="display:flex;gap:8px">
+                <a href="<%= file.path %>" target="_blank" class="btn btn-ghost btn-sm">
+                  <i class="fas fa-download"></i> ডাউনলোড
+                </a>
+                <form method="POST" action="/admin/files/delete/<%= file.id %>" style="display:inline">
+                  <button type="submit" class="btn btn-danger btn-sm" data-confirm="এই ফাইলটি মুছে ফেলবেন?">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</div>
+
+<%- include('../partials/footer') %>
+
