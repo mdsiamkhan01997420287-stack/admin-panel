@@ -1,0 +1,74 @@
+<%- include('../partials/header', { title: 'ছবির গ্যালারি' }) %>
+
+<div class="page-header">
+  <div>
+    <h2>ছবির গ্যালারি</h2>
+    <p><%= images.length %>টি ছবি আপলোড করা আছে।</p>
+  </div>
+</div>
+
+<div class="card" style="margin-bottom:24px">
+  <div class="card-title"><i class="fas fa-cloud-upload-alt"></i> ছবি আপলোড করুন</div>
+  <form method="POST" action="/admin/images/upload" enctype="multipart/form-data">
+    <div class="upload-zone" id="dropZone">
+      <input type="file" name="images" accept="image/*" multiple>
+      <i class="fas fa-cloud-upload-alt"></i>
+      <p><span>ক্লিক করুন</span> অথবা ছবি এখানে ড্র্যাগ করুন</p>
+      <p style="font-size:12px;margin-top:8px;color:var(--text3)">JPG, PNG, GIF, WebP — সর্বোচ্চ ১০ MB প্রতিটি • একসাথে ২০টি পর্যন্ত</p>
+    </div>
+    <div style="display:flex;gap:12px;margin-top:16px;align-items:center">
+      <div class="form-group" style="flex:1;margin:0">
+        <input type="text" name="alt" class="form-input" placeholder="Alt টেক্সট (ঐচ্ছিক)">
+      </div>
+      <button type="submit" class="btn btn-primary"><i class="fas fa-upload"></i> আপলোড করুন</button>
+    </div>
+  </form>
+</div>
+
+<% if (images.length === 0) { %>
+  <div class="card">
+    <div class="empty-state">
+      <i class="fas fa-images"></i>
+      <p>এখনো কোনো ছবি নেই। উপরে থেকে ছবি আপলোড করুন!</p>
+    </div>
+  </div>
+<% } else { %>
+  <div class="image-grid">
+    <% images.forEach(img => { %>
+    <div class="image-card">
+      <img src="<%= img.path %>" alt="<%= img.alt || img.originalName %>" 
+        onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'180\' height=\'140\'%3E%3Crect fill=\'%23252535\' width=\'180\' height=\'140\'/%3E%3Ctext fill=\'%23555570\' x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' font-size=\'12\'%3ENo Image%3C/text%3E%3C/svg%3E'">
+      <div class="image-card-info">
+        <div class="image-card-name" title="<%= img.originalName %>"><%= img.originalName %></div>
+        <div style="font-size:11px;color:var(--text3);margin-top:4px">
+          <%= (img.size / 1024).toFixed(1) %> KB
+        </div>
+        <div class="image-card-actions">
+          <a href="<%= img.path %>" target="_blank" class="btn btn-ghost btn-sm" style="flex:1;justify-content:center">
+            <i class="fas fa-eye"></i>
+          </a>
+          <button onclick="copyPath('<%= img.path %>')" class="btn btn-ghost btn-sm" title="লিংক কপি করুন">
+            <i class="fas fa-link"></i>
+          </button>
+          <form method="POST" action="/admin/images/delete/<%= img.id %>" style="display:inline">
+            <button type="submit" class="btn btn-danger btn-sm" data-confirm="এই ছবিটি মুছে ফেলবেন?">
+              <i class="fas fa-trash"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <% }) %>
+  </div>
+<% } %>
+
+<script>
+function copyPath(path) {
+  const url = window.location.origin + path;
+  navigator.clipboard.writeText(url).then(() => {
+    alert('লিংক কপি হয়েছে: ' + url);
+  });
+}
+</script>
+
+<%- include('../partials/footer') %>
